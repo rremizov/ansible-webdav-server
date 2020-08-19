@@ -1,0 +1,19 @@
+---
+galaxy_info:
+  role_name: webdav-server
+  author: rremizov
+  description: Setup and configure Nginx as a WebDAV server.
+  license: MIT
+  min_ansible_version: 2.8
+
+  platforms:
+    - name: Debian
+      versions:
+        - 9
+        - 10
+
+  galaxy_tags:
+    - nginx
+    - webdav
+
+dependencies: []

@@ -1,0 +1,39 @@
+# Enable to use a provided SSL certificate.
+webdav_server_certificate_enabled: no
+
+# Path to the provided SSL certificate.
+webdav_server_certificate: null
+
+# Path to the provided SSL certificate's key.
+webdav_server_certificate_key: null
+
+# Enable to use certificates provided by certbot.
+webdav_server_certbot_enabled: no
+
+# Path to the directory for Basic Auth credentials.
+webdav_server_htpasswd_directory: /etc/nginx/htpasswd.d
+
+# Virtual hosts configuration.
+# Example:
+# webdav_server_hosts:
+#   - domain: www.example0.com
+#     root: /mnt/volume             # Optional. Default is "/var/www/{{ domain }}".
+#     limit_request_rate: 1r/s      # Optional. Refer to the Nginx rate liming docs:
+#     limit_request_burst: 10       # https://www.nginx.com/blog/rate-limiting-nginx/.
+#     limit_request_delay: nodelay  # https://nginx.org/en/docs/http/ngx_http_limit_req_module.html
+#     client_max_body_size: 128m    # https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size
+#     autoindex_enabled: yes        # Enable Nginx's autoindex module. (https://nginx.org/en/docs/http/ngx_http_autoindex_module.html)
+#     basic_auth:                   # List of users for Basic Auth.
+#       - username: user0
+#         password: password0
+#         state: present
+#       - username: user1
+#         password: password1
+#         state: absent
+#     cidr_allowlist:               # Optional. List of CIDR's which are allowed to access the host.
+#       - 1.2.3.4/32
+#       - 1.2.4.0/24
+#     state: enabled                # State of this host. Disable to remove the config from "sites-enabled".
+#   - domain: www.example1.com
+#     state: disabled
+webdav_server_hosts: []

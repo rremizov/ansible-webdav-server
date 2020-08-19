@@ -1,0 +1,74 @@
+#jinja2: lstrip_blocks: True
+
+{% set domain_slug = item.domain|regex_replace('\.', '_') %}
+{% set limit_zone_name = 'zone_' + domain_slug %}
+
+{% if item.limit_request_rate is defined %}
+limit_req_zone $binary_remote_addr zone={{ item.limit_zone_name }}:8m rate={{ item.limit_request_rate }};
+{% endif %}
+
+server {
+    server_name {{ item.domain }};
+
+    listen 80;
+    listen [::]:80;
+
+    {% if webdav_server_certificate_enabled %}
+    listen 443 ssl;
+    ssl_certificate {{ webdav_server_certificate }};
+    ssl_certificate_key {{ webdav_server_certificate_key }};
+    {% elif webdav_server_certbot_enabled and item.domain in letsencrypt_validated_domains %}
+    listen [::]:443 ssl ipv6only=on; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/{{ item.domain }}/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/{{ item.domain }}/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+    {% endif %}
+
+    gzip on;
+    gzip_disable "msie6";
+    gzip_types text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript application/javascript;
+
+    {% if item.root is defined %}
+    root {{ item.root }};
+    {% else %}
+    root /var/www/{{ item.domain }};
+    {% endif %}
+
+    location / {
+        {% if item.limit_request_rate is defined %}
+        limit_req zone={{ item.limit_zone_name }} burst={{ item.limit_request_burst }}
+            {%- if item.limit_request_delay == 'nodelay' -%}
+            nodelay
+            {%- else %}
+            {{ item.limit_request_delay }}
+            {%- endif %};
+        {% endif %}
+
+        client_max_body_size {{ item.client_max_body_size }};
+        dav_access user:rw group:r all:r;
+
+        dav_methods PUT DELETE MKCOL COPY MOVE;
+        dav_ext_methods PROPFIND OPTIONS;
+
+        {% if item.autoindex_enabled|default(False) %}
+        autoindex on;
+        autoindex_exact_size off;
+        autoindex_localtime on;
+        charset utf-8;
+        {% endif %}
+
+        satisfy all;
+
+        auth_basic "{{ item.domain }}";
+        auth_basic_user_file {{ webdav_server_htpasswd_directory }}/{{ item.domain }};
+
+        {% if item.cidr_allowlist is defined %}
+        {% for cidr in item.cidr_allowlist %}
+        allow {{ cidr }};
+        {% endfor %}
+        deny all;
+        {% endif %}
+    }
+}

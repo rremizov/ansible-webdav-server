@@ -1,0 +1,115 @@
+---
+- name: Install packages
+  apt:
+    name: "{{ packages }}"
+    update_cache: true
+  vars:
+    packages:
+      - python-passlib # For the htpasswd module.
+      - nginx
+      - libnginx-mod-http-dav-ext
+      - certbot
+
+- name: Install nginx configuration
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+  notify:
+    - reload nginx
+
+- name: Check which domains have been validated by Let's Encrypt
+  stat:
+    path: /etc/letsencrypt/{{ item.domain }}/privkey.pem
+  with_items: "{{ webdav_server_hosts }}"
+  loop_control:
+    label: "{{ item.domain }}"
+  register: check_letsencrypt_validated_domains
+
+- name: Expose the fact about domains validated by Certbot
+  set_fact:
+    letsencrypt_validated_domains: >
+      {{ letsencrypt_validated_domains|default([]) + [item.item.domain] }}
+  when: item.stat.exists
+  with_items: "{{ check_letsencrypt_validated_domains.results }}"
+  loop_control:
+    label: "{{ item.item.domain }}"
+
+- name: Install hosts configurations
+  template:
+    src: host.conf.j2
+    dest: /etc/nginx/sites-available/{{ item.domain }}
+  with_items: "{{ webdav_server_hosts }}"
+  loop_control:
+    label: "{{ item.domain }}"
+  notify:
+    - reload nginx
+
+- name: Enable hosts configurations
+  file:
+    path: /etc/nginx/sites-enabled/{{ item.domain }}
+    src: /etc/nginx/sites-available/{{ item.domain }}
+    state: link
+  when: item.state == 'enabled'
+  with_items: "{{ webdav_server_hosts }}"
+  loop_control:
+    label: "{{ item.domain }}"
+  notify:
+    - reload nginx
+
+- name: Disable sites configurations
+  file:
+    path: /etc/nginx/sites-enabled/{{ item.domain }}
+    state: absent
+  when: item.state == 'disabled'
+  with_items: "{{ webdav_server_hosts }}"
+  loop_control:
+    label: "{{ item.domain }}"
+  notify:
+    - reload nginx
+
+- name: Create site's root directory
+  file:
+    path: /var/www/{{ item.domain }}
+    state: directory
+    mode: "0750"
+    owner: www-data
+    group: www-data
+  when: item.root is not defined
+  with_items: "{{ webdav_server_hosts }}"
+  loop_control:
+    label: "{{ item.domain }}"
+
+- name: Create site's root directory
+  file:
+    path: "{{ item.root }}"
+    state: directory
+    mode: "0750"
+    owner: www-data
+    group: www-data
+  when: item.root is defined
+  with_items: "{{ webdav_server_hosts }}"
+  loop_control:
+    label: "{{ item.domain }}"
+
+- name: Create directory for the Basic Auth credentials
+  file:
+    path: "{{ webdav_server_htpasswd_directory }}"
+    state: directory
+    mode: "0750"
+    owner: root
+    group: www-data
+
+- name: Add Basic Auth credentials
+  htpasswd:
+    path: "{{ webdav_server_htpasswd_directory }}/{{ item.0.domain }}"
+    name: "{{ item.1.username }}"
+    password: "{{ item.1.password }}"
+    owner: root
+    group: www-data
+    mode: "640"
+    state: "{{ item.1.state }}"
+  loop: "{{ webdav_server_hosts|subelements('basic_auth', skip_missing=True) }}"
+  loop_control:
+    label: "{{ item.0.domain }}: {{ item.1.username }}"
+  notify:
+    - reload nginx
