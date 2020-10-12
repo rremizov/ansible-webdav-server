@@ -6,6 +6,7 @@
   vars:
     packages:
       - python-passlib # For the htpasswd module.
+      - python3-passlib # For the htpasswd module.
       - nginx
       - libnginx-mod-http-dav-ext
       - certbot
@@ -14,6 +15,9 @@
   template:
     src: nginx.conf.j2
     dest: /etc/nginx/nginx.conf
+    mode: "0644"
+    owner: root
+    group: root
   notify:
     - reload nginx
 
@@ -38,6 +42,10 @@
   template:
     src: host.conf.j2
     dest: /etc/nginx/sites-available/{{ item.domain }}
+    mode: "0644"
+    owner: root
+    group: root
+  when: item.state == 'enabled'
   with_items: "{{ webdav_server_hosts }}"
   loop_control:
     label: "{{ item.domain }}"

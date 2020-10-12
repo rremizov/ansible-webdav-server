@@ -4,7 +4,7 @@
 {% set limit_zone_name = 'zone_' + domain_slug %}
 
 {% if item.limit_request_rate is defined %}
-limit_req_zone $binary_remote_addr zone={{ item.limit_zone_name }}:8m rate={{ item.limit_request_rate }};
+limit_req_zone $binary_remote_addr zone={{ limit_zone_name }}:8m rate={{ item.limit_request_rate }};
 {% endif %}
 
 server {
@@ -38,7 +38,7 @@ server {
 
     location / {
         {% if item.limit_request_rate is defined %}
-        limit_req zone={{ item.limit_zone_name }} burst={{ item.limit_request_burst }}
+        limit_req zone={{ limit_zone_name }} burst={{ item.limit_request_burst }}
             {%- if item.limit_request_delay == 'nodelay' -%}
             nodelay
             {%- else %}

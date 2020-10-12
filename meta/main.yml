@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  role_name: webdav-server
+  role_name: webdav_server
   author: rremizov
   description: Setup and configure Nginx as a WebDAV server.
   license: MIT

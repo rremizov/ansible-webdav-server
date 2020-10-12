@@ -1,5 +1,6 @@
+---
 # Enable to use a provided SSL certificate.
-webdav_server_certificate_enabled: no
+webdav_server_certificate_enabled: false
 
 # Path to the provided SSL certificate.
 webdav_server_certificate: null
@@ -8,7 +9,7 @@ webdav_server_certificate: null
 webdav_server_certificate_key: null
 
 # Enable to use certificates provided by certbot.
-webdav_server_certbot_enabled: no
+webdav_server_certbot_enabled: false
 
 # Path to the directory for Basic Auth credentials.
 webdav_server_htpasswd_directory: /etc/nginx/htpasswd.d
