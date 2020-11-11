@@ -1,4 +1,4 @@
-WebDAV Server
+WebDAV Server ![](https://travis-ci.com/rremizov/ansible-webdav-server.svg?branch=master)
 =============
 
 Setup and configure Nginx as a WebDAV server.
