@@ -5,4 +5,4 @@ docker==4.2.1
 ipdb==0.13.4
 isort==5.1.4
 molecule[docker]==3.0.4
-testinfra==5.2.1
+pytest-testinfra==6.0.0
