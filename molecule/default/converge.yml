@@ -8,12 +8,11 @@
   vars:
     webdav_server_hosts:
       - domain: www.example0.com
-        root: /mnt/volume
         limit_request_rate: 1r/s
         limit_request_burst: 10
         limit_request_delay: nodelay
         client_max_body_size: 128m
-        autoindex_enabled: yes
+        autoindex_enabled: true
         basic_auth:
           - username: user0
             password: password0

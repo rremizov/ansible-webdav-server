@@ -38,7 +38,7 @@ server {
 
     location / {
         {% if item.limit_request_rate is defined %}
-        limit_req zone={{ limit_zone_name }} burst={{ item.limit_request_burst }}
+        limit_req zone={{ limit_zone_name }} burst={{ item.limit_request_burst }}{{' '}}
             {%- if item.limit_request_delay == 'nodelay' -%}
             nodelay
             {%- else %}
