@@ -6,6 +6,3 @@ ipdb==0.13.4
 isort==5.7.0
 molecule[docker]==3.2.3
 pytest-testinfra==6.1.0
-
-# Freeze cryptography since it requires Rust now.
-cryptography==3.4.6
