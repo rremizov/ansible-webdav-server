@@ -2,7 +2,7 @@ ansible-lint==5.0.11
 ansible==4.0.0
 black==21.5b1
 docker==5.0.0
-ipdb==0.13.7
+ipdb==0.13.8
 isort==5.8.0
 molecule[docker]==3.3.1
 pytest-testinfra==6.3.0
