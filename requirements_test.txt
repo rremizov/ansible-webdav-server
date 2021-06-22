@@ -4,5 +4,5 @@ black==21.6b0
 docker==5.0.0
 ipdb==0.13.9
 isort==5.9.1
-molecule[docker]==3.3.3
+molecule[docker]==3.3.4
 pytest-testinfra==6.4.0
