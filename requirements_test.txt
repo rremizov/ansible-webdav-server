@@ -1,5 +1,5 @@
 ansible-lint==5.1.2
-ansible==4.2.0
+ansible==4.3.0
 black==21.7b0
 docker==5.0.0
 ipdb==0.13.9
