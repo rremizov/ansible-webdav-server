@@ -1,6 +1,6 @@
 ansible-lint==6.5.1
 ansible==6.3.0
-black==22.6.0
+black==22.8.0
 docker==6.0.0
 ipdb==0.13.9
 isort==5.10.1
