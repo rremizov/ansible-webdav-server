@@ -19,7 +19,7 @@
     owner: root
     group: root
   notify:
-    - reload nginx
+    - Reload nginx
 
 - name: Check which domains have been validated by Let's Encrypt
   stat:
@@ -32,7 +32,7 @@
 - name: Expose the fact about domains validated by Certbot
   set_fact:
     letsencrypt_validated_domains: >
-      {{ letsencrypt_validated_domains|default([]) + [item.item.domain] }}
+      {{ letsencrypt_validated_domains | default([]) + [item.item.domain] }}
   when: item.stat.exists
   with_items: "{{ check_letsencrypt_validated_domains.results }}"
   loop_control:
@@ -50,7 +50,7 @@
   loop_control:
     label: "{{ item.domain }}"
   notify:
-    - reload nginx
+    - Reload nginx
 
 - name: Enable hosts configurations
   file:
@@ -62,7 +62,7 @@
   loop_control:
     label: "{{ item.domain }}"
   notify:
-    - reload nginx
+    - Reload nginx
 
 - name: Disable sites configurations
   file:
@@ -73,7 +73,7 @@
   loop_control:
     label: "{{ item.domain }}"
   notify:
-    - reload nginx
+    - Reload nginx
 
 - name: Create site's root directory
   file:
@@ -108,7 +108,7 @@
     group: www-data
 
 - name: Add Basic Auth credentials
-  htpasswd:
+  community.general.htpasswd:
     path: "{{ webdav_server_htpasswd_directory }}/{{ item.0.domain }}"
     name: "{{ item.1.username }}"
     password: "{{ item.1.password }}"
@@ -116,8 +116,8 @@
     group: www-data
     mode: "640"
     state: "{{ item.1.state }}"
-  loop: "{{ webdav_server_hosts|subelements('basic_auth', skip_missing=True) }}"
+  loop: "{{ webdav_server_hosts | subelements('basic_auth', skip_missing=True) }}"
   loop_control:
     label: "{{ item.0.domain }}: {{ item.1.username }}"
   notify:
-    - reload nginx
+    - Reload nginx

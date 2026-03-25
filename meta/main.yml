@@ -4,7 +4,7 @@ galaxy_info:
   author: rremizov
   description: Setup and configure Nginx as a WebDAV server.
   license: MIT
-  min_ansible_version: 2.8
+  min_ansible_version: "2.8"
 
   platforms:
     - name: Debian
