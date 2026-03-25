@@ -1,5 +1,6 @@
 ---
-- hosts: localhost
+- name: Test webdav-server role
+  hosts: localhost
   remote_user: root
   roles:
     - webdav-server

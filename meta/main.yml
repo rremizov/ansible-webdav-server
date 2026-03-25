@@ -9,8 +9,7 @@ galaxy_info:
   platforms:
     - name: Debian
       versions:
-        - 9
-        - 10
+        - all
 
   galaxy_tags:
     - nginx
