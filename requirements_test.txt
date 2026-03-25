@@ -1,5 +1,5 @@
-ansible-lint==24.2.0
-ansible==8.7.0
+ansible-lint==26.3.0
+ansible==13.4.0
 black==23.3.0
 docker==6.0.1
 ipdb==0.13.13
