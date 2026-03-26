@@ -5,7 +5,7 @@ driver:
   name: docker
 platforms:
   - name: instance
-    image: "geerlingguy/docker-{{ lookup('env', 'MOLECULE_DISTRO') | default('debian12', true) }}-ansible:latest"
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-debian12}-ansible:latest"
     pre_build_image: true
     privileged: true # To run systemd inside image
     volumes: # To run systemd inside image
