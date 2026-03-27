@@ -5,7 +5,6 @@
     update_cache: true
   vars:
     packages:
-      - python-passlib # For the htpasswd module.
       - python3-passlib # For the htpasswd module.
       - nginx
       - libnginx-mod-http-dav-ext
