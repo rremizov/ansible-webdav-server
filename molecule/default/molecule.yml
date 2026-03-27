@@ -14,5 +14,8 @@ platforms:
     command: null # Use the default image's CMD.
 provisioner:
   name: ansible
+  config_options:
+    defaults:
+      roles_path: ..
 verifier:
   name: testinfra
