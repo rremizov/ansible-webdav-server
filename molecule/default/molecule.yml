@@ -14,8 +14,7 @@ platforms:
     command: null # Use the default image's CMD.
 provisioner:
   name: ansible
-  config_options:
-    defaults:
-      roles_path: ..
+  env:
+    ANSIBLE_ROLES_PATH: ${MOLECULE_PROJECT_DIRECTORY}/..
 verifier:
   name: testinfra
